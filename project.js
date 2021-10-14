@@ -14,7 +14,7 @@ class Transaction{
             }
         });
         scenario.sort((a, b) => a.index - b.index); //sorting indexes of scenario objects
-        this.store = null;
+        this.store = {};
         this.logs = [];
         for(let step of scenario){
             try{
@@ -29,6 +29,7 @@ class Transaction{
                 error: null,
                 };
                 this.logs.push(myObject); 
+                this.store = {}
                 // let currentStep = scenario[key];
             }catch(err){
                 try{
@@ -54,7 +55,7 @@ class Transaction{
                             storeAfter: rollback,
                             error: null,
                         };
-                        this.store = null;
+                        this.store = null; 
                         this.logs.push(logRollbacked);
                         }
                 }catch(error){
@@ -91,7 +92,7 @@ class Transaction{
                 storeAfter: rollback,
                 error: null,
                 };
-                this.store = null;
+                this.store = {}; ////
                 this.logs.push(logObj);
             }catch(error){
                 //error object with error property
@@ -120,9 +121,9 @@ const scenario = [
             description: 'This action is responsible for reading the most popular customers'
         },
 				// callback for main execution
-        call: async (store) => {},
+        call: async (store) => {throw new Error('call not working :()')},
 				// callback for rollback
-        restore: async (store) => {}
+        restore: async (store) => {return 'This Step Restored Successfully!'}
     },
     {
         index: 3,
@@ -131,9 +132,9 @@ const scenario = [
             description: 'This action is responsible for deleting customer'
         },
 				// callback for main execution
-        call: async (store) => {throw new Error('some Error message')},
+        call: async (store) => {throw new Error('errr')},
 				// callback for rollback
-        restore: async (store) => {throw new Error('another Error message')} 
+        restore: async (store) => {throw new Error('errr')} 
     },
     {
     index: 1,
@@ -144,7 +145,7 @@ const scenario = [
             // callback for main execution
     call: async (store) => {},
             // callback for rollback
-    restore: async (store) => {throw new Error(`restore Error on step 1`)}
+    restore: async (store) => {return 'Task Restored Successfully!'}
 }
 ];
 
@@ -156,7 +157,7 @@ const transaction = new Transaction();
 			const store = transaction.store; // {} | null
 			const logs = transaction.logs; // []
             // console.log(logs) // []
-            // console.log(store) // {} | null
+            console.log(store) // {} | null
 
     } catch (err) {
 			// log detailed error
